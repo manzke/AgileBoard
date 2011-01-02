@@ -192,9 +192,37 @@ var dao = function() {
 			return [s1, s2, s3, s4, s5, s6];
 		},
 		
+		persist: function(){
+			if (Modernizr.applicationcache){
+			  // We have offline web app support! Continue operation,
+			  // indicating to the user that the app will sync up once they get back online
+			} else {
+			  alert("Sorry you can't persist it, because your Browser doesn't support the Application Cache in HTML5");
+			}    
+		},
+		
 		updatePriority: function(oPrio, nPrio) {
 			//alert('old: ' + oPrio + ', new: ' + nPrio);
-		}
+		},
+		
+		function initDb() {
+			persistence.store.websql.config(persistence, 'agileboard', 'Database Storage for the AgileBoard', 5 * 1024 * 1024);
+			
+			var State = persistence.define('State', {
+			  id: "TEXT",
+			  name: "TEXT"
+			});
+
+			var Task = persistence.define('Task', {
+			  name: "TEXT",
+			  state: "TEXT"
+			});
+
+			var Story = persistence.define('Story', {
+			  name: "TEXT",
+			  prio: INT
+			});
+		};
 }();
 
 $(document).ready(function() {
