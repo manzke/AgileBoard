@@ -223,6 +223,7 @@ var dao = function() {
 			  prio: INT
 			});
 		};
+	}
 }();
 
 $(document).ready(function() {

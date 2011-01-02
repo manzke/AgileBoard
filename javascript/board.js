@@ -195,6 +195,7 @@ var dao = function() {
 		updatePriority: function(oPrio, nPrio) {
 			//alert('old: ' + oPrio + ', new: ' + nPrio);
 		}
+	};
 }();
 
 $(document).ready(function() {
