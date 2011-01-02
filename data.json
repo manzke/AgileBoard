@@ -1,11 +1,11 @@
 {
-	"state" : [
-					{ "id": "n", "short": "n", "long": "New" },
-					{ "id": "pr", "short": "pr", "long": "Product Management" },
-					{ "id": "d", "short": "d", "long": "Design" },
-					{ "id": "dev", "short": "dev", "long": "Development" },
-					{ "id": "t", "short": "t", "long": "Test" },
-					{ "id": "r", "short": "r", "long": "Release" }
+	"states" : [
+					{ "id": "n", "name": "New" },
+					{ "id": "pr", "name": "Product Management" },
+					{ "id": "d", "name": "Design" },
+					{ "id": "dev", "name": "Development" },
+					{ "id": "t", "name": "Test" },
+					{ "id": "r", "name": "Release" }
 				],
 	"stories" :[
 					{
