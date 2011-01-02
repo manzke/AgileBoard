@@ -1,0 +1,39 @@
+{
+	"state" : [
+					{ "id": "n", "short": "n", "long": "New" },
+					{ "id": "pr", "short": "pr", "long": "Product Management" },
+					{ "id": "d", "short": "d", "long": "Design" },
+					{ "id": "dev", "short": "dev", "long": "Development" },
+					{ "id": "t", "short": "t", "long": "Test" },
+					{ "id": "r", "short": "r", "long": "Release" }
+				],
+	"stories" :[
+					{
+						"name": "Do some Stuff!",
+						"prio": 1,
+						"tasks":[
+									{ "name":"Fix YSlow", "state":"pr" },
+									{ "name":"Make application faster", "state":"t" },
+									{ "name":"Build something astonishing", "state":"pr" },
+									{ "name":"Google Page Speed fix", "state":"d" }
+								]
+					},
+					{
+						"name": "Rethink",
+						"prio": 2,
+						"tasks":[
+									{ "name":"Do something with OpenID", "state":"d" },
+									{ "name":"Checkout optimize", "state":"dev" }
+								]
+					},
+					{
+						"name": "Rethink",
+						"prio": 3,
+						"tasks":[
+									{ "name":"Credit Card Payment", "state":"r" },
+									{ "name":"Rebuild with REST", "state":"dev" },
+									{ "name":"Rebuild with SOAP", "state":"dev" }
+								]
+					}
+				]
+}		

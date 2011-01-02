@@ -1,14 +1,19 @@
 var story = function(name, prio) {
 	var name = name;
 	var prio = prio;
+	var tasks = [];
 	
 	return {
 		name: name,
 		prio: prio,
-		tasks: [],
+		tasks: tasks,
 	
 		render: function() {
 			return $('<div></div>').text(name);
+		},
+		
+		addTask: function(item) {
+			tasks.push(item);
 		}
 	};
 }
@@ -85,7 +90,7 @@ var board = function() {
 		},
 		
 		addTask: function(task, story){
-			//stories.push(story);
+			story.addTask(task);
 		},
 		
 		render: function(container){
@@ -96,7 +101,7 @@ var board = function() {
 				 $('#stories').append($('<option></option>').attr('value', story.name).text(story.name));
 			});
 
-			$('body').append($('<a></a>').attr('href','#story').text('+ Story').click(function() { 
+			$('body').append($('<a></a>').attr('href','#story').attr('id','addStory').text('+ Story').click(function() { 
 				$('#taskForm').hide();
 				$('#storyForm').show();
 			}));
@@ -121,6 +126,11 @@ var board = function() {
 			}, function() {
 				$(this).removeClass('dragHandle');
 			});
+		},		
+		reset: function(container){
+			$("#addStory").remove();
+			$("#board").remove();
+			stories = [];
 		}
     };
 }();
@@ -162,15 +172,35 @@ var dao = function() {
     };
 }();
 
-var addStory = function() {
-
-}
-
-var addTask = function() {
-
-}
-
 $(document).ready(function() {
 	board.init(dao.findAllStories());
 	board.render();
 });
+
+function load()
+			{
+				var	location = $('#location').val();
+				console.log("load "+location);
+				$.getJSON(location, 
+							function(data)
+							{
+								board.reset();
+								console.log("success");
+								$.each(data.stories, function(i,item)
+													{
+														console.log(board);
+														var st = new story(item.name, item.prio);
+														board.addStory(st);
+														$.each(item.tasks, function(j,jitem)
+																			{
+																				console.log(jitem.name);
+																				board.addTask(new task(jitem.name,jitem.state), st);
+																			}
+														); 
+													}
+								);
+								board.render();
+								console.log("render");
+							}
+						);
+			}
