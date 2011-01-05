@@ -248,10 +248,12 @@ var utils = function(){
 		save: function(id){
 			var location = $(id).val();
 			dao.save(location, isOnline);
+			$('#feedback').append($('<span></span').addClass('ok').text('Saved!'));
 		},
 		load: function(id){
 			var location = $(id).val();
 			dao.load(location, isOnline);
+			$('#feedback').append($('<span></span').addClass('ok').text('Loaded!'));
 		}
 	};
 }();
