@@ -6,14 +6,6 @@ input, select {
 	border: 1px solid #000;
 }
 
-/* States */
-.n {background-color: #FFFF00;}
-.pr {background-color: #FFC300;}
-.d {background-color: #B000ff;}
-.dev {background-color: #B44440;}
-.t {background-color: #B5DBFF;}
-.r {background-color: #A5C700;}
-
 .state, .task, .story, #feedback span {
 	-moz-border-radius:3px;
 	margin: 0.2em;
@@ -25,7 +17,17 @@ input, select {
 }
 
 span.error {
-	background-color: #ff0000;
+	background-color: red;
+	color: #fff; 
+}
+
+span.info {
+	background-color: yellow;
+	color: #fff; 
+}
+
+span.ok {
+	background-color: green;
 	color: #fff; 
 }
 

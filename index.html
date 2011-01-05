@@ -1,15 +1,20 @@
-<html>
+<!DOCTYPE HTML>
+<html manifest="cache.manifest">
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>Agile Board</title>
 		<link rel="stylesheet" href="styles/board.css" type="text/css" />
+		<script language="JavaScript" src="javascript/jquery-1.4.4.min.js"></script>
+		<script language="JavaScript" src="javascript/jquery.tablednd-0.5.js"></script>
+		<script language="JavaScript" src="javascript/json2.js"></script>
 	</head>
 
 	<body>
 		<div id="feedback"></div>
 		<h1>Agile Board</h1>
 		
-		<input type="submit" name="load" onClick="load()"/>
+		<input type="submit" name="load" value="load" onClick="board.load('#location')"/>
+		<input type="submit" name="save" value="save" onClick="board.save('#location')"/>
 		<input type="text" name="location" id="location" value="data.json" />
 		
 		<form id="storyForm" style="display:none">
@@ -23,10 +28,6 @@
 			<select id="states" name="state"></select>
 			<input type="submit" />
 		</form>
-	
-		<script language="JavaScript" src="javascript/jquery-1.4.4.min.js"></script>
-		<script language="JavaScript" src="javascript/jquery.tablednd-0.5.js"></script>
 		<script language="JavaScript" src="javascript/board.js"></script>
-		<script language="JavaScript" src="javascript/modernizr-1.6.min.js"></script>
 	</body>
 </html>

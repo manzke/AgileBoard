@@ -1,0 +1,16 @@
+CACHE MANIFEST
+
+CACHE:
+index.html
+styles/board.css
+javascript/board.js
+javascript/jquery.tablednd-0.5.js
+javascript/jquery-1.4.4.min.js
+javascript/json2.js
+data.json
+
+NETWORK:
+javascript/ping.json
+*
+
+# Cache Manifest Version: 0.2.44

@@ -1,14 +1,14 @@
-var state = function(id, name) {
+var isOnline = true;
+
+var state = function(id, name, color) {
 	var id;
 	var name;
+	var color;
 	
 	return {
 		id: id,
 		name: name,
-	
-		render: function() {
-			return $('<div></div>').addClass('task').text(name);
-		}
+		color: color
 	};
 }
 
@@ -54,7 +54,7 @@ var board = function() {
 	function renderHeader() {
 		var header = $('<tr><th></th></tr>');
 		$.each(states, function(s, state) { 
-			header.append($('<th></th>').addClass('state').addClass(state.id).text(state.name));
+			header.append($('<th></th>').addClass('state').css("background-color", state.color).text(state.name));
 		});
 		return header;
 	}
@@ -88,12 +88,22 @@ var board = function() {
 	}
 	
 	return {
-		// public interface
-		init: function(persistedStates, persistedStories) {
-			stories = persistedStories;
-			states = persistedStates;
+		save: function(id){
+			var location = $(id).val();
+			console.log("saving to "+location+" if online: "+isOnline);
+			save(location, isOnline, states, stories);
 		},
 		
+		load: function(id){
+			var location = $(id).val();
+			console.log("loading from "+location+" if online: "+isOnline);
+			load(location, isOnline);
+		},
+
+		addState: function(state){
+			states.push(state);
+		},
+
 		addStory: function(story){
 			stories.push(story);
 		},
@@ -101,11 +111,7 @@ var board = function() {
 		addTask: function(task, story){
 			story.addTask(task);
 		},
-		
-		addState: function(state){
-			states.push(state);
-		},
-		
+				
 		render: function(container){
 			$.each(states, function(s, state) {
 				 $('#states').append($('<option></option>').attr('value', state.id).text(state.name));	
@@ -150,83 +156,106 @@ var board = function() {
     };
 }();
 
-var dao = function() {
-	
-	if (!window.google || !google.gears) {
-		$('#feedback').append($('<span></span').addClass('error').text('Persistence not available'));
-	}
-		
-	return {
-		findAllStories: function() {
-			var x = new story('Do some stuff.', 1)
-			x.tasks.push(new task('Fix YSlow','pr'));
-			x.tasks.push(new task('Make application faster','dev'));
-			x.tasks.push(new task('Build something astonishing','pr'));
-			x.tasks.push(new task('Google Page Speed fix','d'));
-			
-			var y = new story('Rethink.', 2)
-			y.tasks.push(new task('Do something with OpenID','d'));
-			y.tasks.push(new task('Checkout optimize','dev'));
-			
-			var a = new story('Rethink.', 3)
-			a.tasks.push(new task('Credit Card Payment','r'));
-			a.tasks.push(new task('Rebuild with REST','dev'));
-			a.tasks.push(new task('Rebuild with SOAP','dev'));
-			
-			var b = new story('Rethink.', 4)
-			b.tasks.push(new task('Do something with OpenID','d'));
-			b.tasks.push(new task('Checkout optimize','dev'));
-			b.tasks.push(new task('Rebuild with REST','dev'));
-					
-			return [x, y, a, b];
-		},
-		
-		findAllStates: function(){
-			var s1 = new state("n","New");
-			var s2 = new state("pr","Product Management");
-			var s3 = new state("d","Desin");
-			var s4 = new state("dev","Development");
-			var s5 = new state("t","Test");
-			var s6 = new state("r","Release");
-			
-			return [s1, s2, s3, s4, s5, s6];
-		},
-		
-		updatePriority: function(oPrio, nPrio) {
-			//alert('old: ' + oPrio + ', new: ' + nPrio);
-		}
-	};
-}();
-
 $(document).ready(function() {
-	board.init(dao.findAllStates(), dao.findAllStories());
-	board.render();
+	$(document.body).bind("online", checkNetworkStatus);
+    $(document.body).bind("offline", checkNetworkStatus);
+
+	var location = getQueryVariable("location");
+	if(location == null){
+		$('#location').val("data.json");	
+	}
+	checkNetworkStatus();
+	board.load('#location');
 });
 
-function load()
-{
-	var	location = $('#location').val();
-	$.getJSON(location, 
-				function(data)
-				{
-					board.reset();
-					$.each(data.states, function(i,item)
-										{
-											board.addState(new state(item.id, item.name));
-										}
-					);
-					$.each(data.stories, function(i,item)
-										{
-											var st = new story(item.name, item.prio);
-											board.addStory(st);
-											$.each(item.tasks, function(j,jitem)
-																{
-																	board.addTask(new task(jitem.name,jitem.state), st);
-																}
-											); 
-										}
-					);
-					board.render();
-				}
-			);
+function save(location, isOnline, states, stories){
+	/*if(isOnline){
+			alert("Saving at a remote location is not implemented");
+	}else{*/
+		if (window.localStorage) {
+			console.log("saving states: "+JSON.stringify(states));
+			console.log("saving stories: "+JSON.stringify(stories));
+			localStorage.setItem(location, JSON.stringify({"states":states,"stories":stories}));
+		} else {
+			alert("Your Browser does not support LocalStorage.");
+		}		
+	//}
 }
+
+function load(location, isOnline){
+	if(isOnline){
+		$.getJSON(location, parse);
+	}else{
+		if (window.localStorage) {
+			var data = localStorage.getItem(location);
+			parse(JSON.parse(data));
+		} else {
+			alert("Your Browser does not support LocalStorage.");
+		}
+	}
+}
+
+function parse(data){
+	board.reset();
+	$.each(data.states, function(i,item)
+						{
+							board.addState(new state(item.id, item.name, item.color));
+						}
+	);
+	$.each(data.stories, function(i,item)
+						{
+							var st = new story(item.name, item.prio);
+							board.addStory(st);
+							$.each(item.tasks, function(j,jitem)
+												{
+													board.addTask(new task(jitem.name,jitem.state), st);
+												}
+							); 
+						}
+	);
+	board.render();
+}
+
+function getQueryVariable(variable) { 
+	var query = window.location.search.substring(1); 
+	var vars = query.split("&"); 
+	for (var i=0;i<vars.length;i++) { 
+		var pair = vars[i].split("="); 
+		if (pair[0] == variable) { 
+			return pair[1]; 
+		} 
+	} 
+	return null;
+} 
+
+function updateOnlineStatus(online) {
+	isOnline = online;
+	if(online){
+		$('#feedback').append($('<span></span').addClass('ok').text('You are online!'));
+	}else{
+		$('#feedback').append($('<span></span').addClass('info').text('You are offline!'));
+	}     
+}   
+
+function checkNetworkStatus() {
+    if (navigator.onLine) {
+        $.ajaxSetup({
+            async: true,
+            cache: false,
+            dataType: "json",
+            error: function (req, status, ex) {
+                updateOnlineStatus(false);
+            },
+            success: function (data, status, req) {
+                updateOnlineStatus(true);
+            },
+            timeout: 5000,
+            type: "GET",
+            url: "javascript/ping.json"
+        });
+        $.ajax();
+    }
+    else {
+        updateOnlineStatus(false);
+    }
+} 

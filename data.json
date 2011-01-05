@@ -1,11 +1,11 @@
 {
 	"states" : [
-					{ "id": "n", "name": "New" },
-					{ "id": "pr", "name": "Product Management" },
-					{ "id": "d", "name": "Design" },
-					{ "id": "dev", "name": "Development" },
-					{ "id": "t", "name": "Test" },
-					{ "id": "r", "name": "Release" }
+					{ "id": "n", "name": "New", "color": "#FFFF00" },
+					{ "id": "pr", "name": "Product Management", "color": "#FFC300" },
+					{ "id": "d", "name": "Design", "color": "#B000FF" },
+					{ "id": "dev", "name": "Development", "color": "#B44440" },
+					{ "id": "t", "name": "Test", "color": "#B5DBFF" },
+					{ "id": "r", "name": "Release", "color": "#A5C700" }
 				],
 	"stories" :[
 					{
