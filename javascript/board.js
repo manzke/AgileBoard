@@ -158,6 +158,7 @@ var dao = function(){
 			}	
 		},
 		load: function(location, isOnline){
+			//TODO If loaded, should we add it directly to LocalStorage?
 			if(isOnline){
 				$.getJSON(location, utils.parse);
 			}else{
@@ -201,15 +202,15 @@ var utils = function(){
 					dataType: "json",
 					error: function (req, status, ex) {
 						utils.updateOnlineStatus(false);
-						if(onAction != null){
+						if(typeof(onAction) != 'undefined'){
 							onAction(false);
-						}
+						};
 					},
 					success: function (data, status, req) {
 						utils.updateOnlineStatus(true);
-						if(onAction != null){
+						if(typeof(onAction) != 'undefined'){
 							onAction(true);
-						}
+						};
 					},
 					timeout: 5000,
 					type: "GET",
@@ -219,7 +220,7 @@ var utils = function(){
 			}
 			else {
 				utils.updateOnlineStatus(false);
-				if(onAction != null){
+				if(typeof(onAction) != 'undefined'){
 					onAction(false);
 				};
 			}
@@ -267,4 +268,11 @@ $(document).ready(function() {
 		utils.load('#location');
 	});
 	
+	for (var i = 0; i < localStorage.length; i++){
+		var key = localStorage.key(i);
+        var value = localStorage.getItem(key);
+			
+		console.log(key+" / "+value);
+		//TODO Add the available items to location-box
+	}
 });
