@@ -88,16 +88,8 @@ var board = function() {
 	}
 	
 	return {
-		save: function(id){
-			var location = $(id).val();
-			console.log("saving to "+location+" if online: "+isOnline);
-			save(location, isOnline, states, stories);
-		},
-		
-		load: function(id){
-			var location = $(id).val();
-			console.log("loading from "+location+" if online: "+isOnline);
-			load(location, isOnline);
+		getData: function(){
+			return {"states":states, "stories":stories};
 		},
 
 		addState: function(state){
@@ -150,112 +142,129 @@ var board = function() {
 		reset: function(container){
 			$("#addStory").remove();
 			$("#board").remove();
-			stories = [];
-			states = [];
+			stories.length=0;
+			states.length=0;
 		}
     };
 }();
 
-$(document).ready(function() {
-	$(document.body).bind("online", checkNetworkStatus);
-    $(document.body).bind("offline", checkNetworkStatus);
+var dao = function(){
+	return {
+		save: function(location, isOnline){
+			if (window.localStorage) {
+				localStorage.setItem(location, JSON.stringify(board.getData()));
+			} else {
+				alert("Your Browser does not support LocalStorage.");
+			}	
+		},
+		load: function(location, isOnline){
+			if(isOnline){
+				$.getJSON(location, utils.parse);
+			}else{
+				if (window.localStorage) {
+					var data = localStorage.getItem(location);
+					utils.parse(JSON.parse(data));
+				} else {
+					alert("Your Browser does not support LocalStorage.");
+				}
+			}
+		}
+	};
+}();
 
-	var location = getQueryVariable("location");
+var utils = function(){
+	return {
+		getQueryVariable: function(variable) { 
+			var query = window.location.search.substring(1); 
+			var vars = query.split("&"); 
+			for (var i=0;i<vars.length;i++) { 
+				var pair = vars[i].split("="); 
+				if (pair[0] == variable) { 
+					return pair[1]; 
+				} 
+			} 
+			return null;
+		}, 
+		updateOnlineStatus: function(online) {
+			isOnline = online;
+			if(online){
+				$('#feedback').append($('<span></span').addClass('ok').text('You are online!'));
+			}else{
+				$('#feedback').append($('<span></span').addClass('info').text('You are offline!'));
+			}     
+		}, 
+		checkNetworkStatus: function(onAction) {
+			if (navigator.onLine) {
+				$.ajaxSetup({
+					async: true,
+					cache: false,
+					dataType: "json",
+					error: function (req, status, ex) {
+						utils.updateOnlineStatus(false);
+						if(onAction != null){
+							onAction(false);
+						}
+					},
+					success: function (data, status, req) {
+						utils.updateOnlineStatus(true);
+						if(onAction != null){
+							onAction(true);
+						}
+					},
+					timeout: 5000,
+					type: "GET",
+					url: "javascript/ping.json"
+				});
+				$.ajax();
+			}
+			else {
+				utils.updateOnlineStatus(false);
+				if(onAction != null){
+					onAction(false);
+				};
+			}
+		},
+		parse: function(data){
+			board.reset();
+			$.each(data.states, function(i,item)
+								{
+									board.addState(new state(item.id, item.name, item.color));
+								}
+			);
+			$.each(data.stories, function(i,item)
+								{
+									var st = new story(item.name, item.prio);
+									board.addStory(st);
+									$.each(item.tasks, function(j,jitem)
+														{
+															board.addTask(new task(jitem.name,jitem.state), st);
+														}
+									); 
+								}
+			);
+			board.render();
+		},
+		save: function(id){
+			var location = $(id).val();
+			dao.save(location, isOnline);
+		},
+		load: function(id){
+			var location = $(id).val();
+			dao.load(location, isOnline);
+		}
+	};
+}();
+
+$(document).ready(function() {
+	$(document.body).bind("online", utils.checkNetworkStatus);
+    $(document.body).bind("offline", utils.checkNetworkStatus);
+
+	var location = utils.getQueryVariable("location");
 	if(location == null){
 		$('#location').val("data.json");	
 	}
-	checkNetworkStatus();
-	board.load('#location');
+	utils.checkNetworkStatus(function(online){
+		utils.load('#location');
+	});
+	
 });
-
-function save(location, isOnline, states, stories){
-	/*if(isOnline){
-			alert("Saving at a remote location is not implemented");
-	}else{*/
-		if (window.localStorage) {
-			console.log("saving states: "+JSON.stringify(states));
-			console.log("saving stories: "+JSON.stringify(stories));
-			localStorage.setItem(location, JSON.stringify({"states":states,"stories":stories}));
-		} else {
-			alert("Your Browser does not support LocalStorage.");
-		}		
-	//}
-}
-
-function load(location, isOnline){
-	if(isOnline){
-		$.getJSON(location, parse);
-	}else{
-		if (window.localStorage) {
-			var data = localStorage.getItem(location);
-			parse(JSON.parse(data));
-		} else {
-			alert("Your Browser does not support LocalStorage.");
-		}
-	}
-}
-
-function parse(data){
-	board.reset();
-	$.each(data.states, function(i,item)
-						{
-							board.addState(new state(item.id, item.name, item.color));
-						}
-	);
-	$.each(data.stories, function(i,item)
-						{
-							var st = new story(item.name, item.prio);
-							board.addStory(st);
-							$.each(item.tasks, function(j,jitem)
-												{
-													board.addTask(new task(jitem.name,jitem.state), st);
-												}
-							); 
-						}
-	);
-	board.render();
-}
-
-function getQueryVariable(variable) { 
-	var query = window.location.search.substring(1); 
-	var vars = query.split("&"); 
-	for (var i=0;i<vars.length;i++) { 
-		var pair = vars[i].split("="); 
-		if (pair[0] == variable) { 
-			return pair[1]; 
-		} 
-	} 
-	return null;
-} 
-
-function updateOnlineStatus(online) {
-	isOnline = online;
-	if(online){
-		$('#feedback').append($('<span></span').addClass('ok').text('You are online!'));
-	}else{
-		$('#feedback').append($('<span></span').addClass('info').text('You are offline!'));
-	}     
-}   
-
-function checkNetworkStatus() {
-    if (navigator.onLine) {
-        $.ajaxSetup({
-            async: true,
-            cache: false,
-            dataType: "json",
-            error: function (req, status, ex) {
-                updateOnlineStatus(false);
-            },
-            success: function (data, status, req) {
-                updateOnlineStatus(true);
-            },
-            timeout: 5000,
-            type: "GET",
-            url: "javascript/ping.json"
-        });
-        $.ajax();
-    }
-    else {
-        updateOnlineStatus(false);
-    }
-} 
