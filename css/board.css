@@ -6,13 +6,17 @@ input, select {
 	border: 1px solid #000;
 }
 
-.state, .task, .story, #feedback span {
+.state, .task, .story, #feedback, #onlineStatus span {
 	-moz-border-radius:3px;
 	margin: 0.2em;
 	padding: 0.2em;
 }
 
 #feedback {
+	text-align: center;
+}
+
+#onlineStatus {
 	text-align: center;
 }
 

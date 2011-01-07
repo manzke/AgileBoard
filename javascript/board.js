@@ -157,16 +157,32 @@ var dao = function(){
 				alert("Your Browser does not support LocalStorage.");
 			}	
 		},
-		load: function(location, isOnline){
-			//TODO If loaded, should we add it directly to LocalStorage?
+		load: function(location, isOnline, store){
 			if(isOnline){
-				$.getJSON(location, utils.parse);
+				$.ajax({
+					async: true,
+					dataType: "json",
+					error: function (req, status, ex) {
+						utils.updateOnlineStatus(false, true);
+						utils.feedback('#feedback', 'error', 'No data was fetched from location: '+location);
+					},
+					success: function (data, status, req) {
+						utils.updateOnlineStatus(true, true);
+						utils.parse(data);
+						if(store){
+							dao.save(location, isOnline);
+						}
+					},
+					timeout: 5000,
+					type: "GET",
+					url: location
+				});
 			}else{
 				if (window.localStorage) {
 					var data = localStorage.getItem(location);
 					utils.parse(JSON.parse(data));
 				} else {
-					alert("Your Browser does not support LocalStorage.");
+					utils.feedback('#feedback', 'error', 'Your Browser does not support LocalStorage.');
 				}
 			}
 		}
@@ -186,17 +202,19 @@ var utils = function(){
 			} 
 			return null;
 		}, 
-		updateOnlineStatus: function(online) {
+		updateOnlineStatus: function(online, hide) {
 			isOnline = online;
-			if(online){
-				$('#feedback').append($('<span></span').addClass('ok').text('You are online!'));
-			}else{
-				$('#feedback').append($('<span></span').addClass('info').text('You are offline!'));
-			}     
+			if(!hide){
+				if(online){
+					$('#onlineStatus').empty().append($('<span></span').addClass('ok').text('You are online!'));
+				}else{
+					$('#onlineStatus').empty().append($('<span></span').addClass('info').text('You are offline!'));
+				}
+			}
 		}, 
 		checkNetworkStatus: function(onAction) {
 			if (navigator.onLine) {
-				$.ajaxSetup({
+				$.ajax({
 					async: true,
 					cache: false,
 					dataType: "json",
@@ -216,7 +234,6 @@ var utils = function(){
 					type: "GET",
 					url: "javascript/ping.json"
 				});
-				$.ajax();
 			}
 			else {
 				utils.updateOnlineStatus(false);
@@ -245,15 +262,21 @@ var utils = function(){
 			);
 			board.render();
 		},
+		feedback: function(field, clazz, text){
+			$(field).append($('<span></span').addClass(clazz).text(text));					
+			setTimeout(function() {
+						$(field).empty();
+					}, 3000 );
+		},
 		save: function(id){
 			var location = $(id).val();
 			dao.save(location, isOnline);
-			$('#feedback').append($('<span></span').addClass('ok').text('Saved!'));
+			utils.feedback('#feedback', 'ok', 'Saved!');
 		},
-		load: function(id){
+		load: function(id, store){
 			var location = $(id).val();
-			dao.load(location, isOnline);
-			$('#feedback').append($('<span></span').addClass('ok').text('Loaded!'));
+			dao.load(location, isOnline, store);
+			utils.feedback('#feedback', 'ok', 'Loaded!');
 		}
 	};
 }();
@@ -262,7 +285,7 @@ $(document).ready(function() {
 	$(document.body).bind("online", utils.checkNetworkStatus);
     $(document.body).bind("offline", utils.checkNetworkStatus);
 
-	var location = utils.getQueryVariable("location");
+	var location = utils.getQueryVariable("#location");
 	if(location == null){
 		$('#location').val("data.json");	
 	}
@@ -270,11 +293,51 @@ $(document).ready(function() {
 		utils.load('#location');
 	});
 	
-	for (var i = 0; i < localStorage.length; i++){
-		var key = localStorage.key(i);
-        var value = localStorage.getItem(key);
+	$( "#saveButton" )
+			.button()
+			.click(function() {
+				utils.save('#location');
+			});
+	
+	$( "#loadButton" )
+			.button()
+			.click(function() {
+				$( "#loadDialog-form" ).dialog( "open" );
+			});
 			
-		console.log(key+" / "+value);
-		//TODO Add the available items to location-box
-	}
+	$( "#loadDialog-form" ).dialog({
+			autoOpen: false,
+			modal: true,
+			buttons: {
+				"Load a Board": function() {
+					var internalLocation = $('#internalLocation');
+					var location = internalLocation.val();
+					if(location == null || location.length == 0){
+						location = $('#offlineBoards :selected').val();
+					}
+					$('#location').val(location);
+					console.log("load from location: "+location+" and store it offline? "+ $('#offlineAvailable').is(':checked'));
+					utils.load('#location', $('#offlineAvailable').is(':checked'));
+					$( this ).dialog( "close" );
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			open: function(){
+				var offlineBoards = $('#offlineBoards');
+				offlineBoards.empty();
+				for (var i = 0; i < localStorage.length; i++){
+					var key = localStorage.key(i);	
+					offlineBoards.append(new Option(key, key));
+				}				
+			},
+			close: function() {
+				$('#internalLocation').val("");
+			}
+		});
+		
+	setInterval(function() {
+					utils.checkNetworkStatus();
+				}, 5000 );
 });

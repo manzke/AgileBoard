@@ -3,20 +3,37 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>Agile Board</title>
-		<link rel="stylesheet" href="styles/board.css" type="text/css" />
+		<link rel="stylesheet" href="css/board.css" type="text/css" />
+		<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.7.custom.css" type="text/css" />
 		<script language="JavaScript" src="javascript/jquery-1.4.4.min.js"></script>
 		<script language="JavaScript" src="javascript/jquery.tablednd-0.5.js"></script>
+		<script language="JavaScript" src="javascript/jquery-ui-1.8.7.custom.min.js"></script>
 		<script language="JavaScript" src="javascript/json2.js"></script>
 	</head>
 
 	<body>
+		<div id="onlineStatus"></div>
 		<div id="feedback"></div>
 		<h1>Agile Board</h1>
 		
-		<input type="submit" name="load" value="load" onClick="utils.load('#location')"/>
-		<input type="submit" name="save" value="save" onClick="utils.save('#location')"/>
-		<input type="text" name="location" id="location" value="data.json" />
-		
+		<div id="loadDialog"></div>
+		<div id="loadDialog-form" title="Load a Board">
+			<p class="validateTips">All form fields are required.</p>
+			<form>
+				<fieldset>
+					<label for="internalLocation">Location</label>
+					<input type="text" name="internalLocation" id="internalLocation" value="" class="text ui-widget-content ui-corner-all" />
+					<label for="offlineAvailable">Offline available?</label>
+					<input type="checkbox" name="offlineAvailable" id="offlineAvailable" checked class="text ui-widget-content ui-corner-all" />
+					<select id="offlineBoards">
+					</select>
+				</fieldset>
+			</form>
+		</div>
+		<button id="loadButton">Load</button>
+		<button id="saveButton">Save</button>
+		<input type="hidden" name="location" id="location" value="data.json"/>
+				
 		<form id="storyForm" style="display:none">
 			<input type="text" name="storyName" />
 			<input type="submit" />
