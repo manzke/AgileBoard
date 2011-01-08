@@ -2,7 +2,16 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>Agile Board</title>
-		<link rel="stylesheet" href="styles/board.css" type="text/css" />
+		<link rel="stylesheet" href="_styles/board.css" type="text/css" />
+
+	<style>
+		#board { margin: 0; padding: 0px;}
+		.story { clear: left; background-color: #ff3300; overflow: auto; }
+		.desc { width: 7%; display: block; padding: 0.5em 1.5em; }
+		.state, .desc { float: left;}
+		.tasks { float: left; background-color: #ff9900; border: 1px solid #000; padding-top: 1em; }
+		.tasks, .state { padding: 0.5em 1.5em; margin: 0; width: 10%; display: block; }
+	</style>
 	</head>
 
 	<body>
@@ -23,6 +32,8 @@
 	
 		<script language="JavaScript" src="javascript/jquery-1.4.4.min.js"></script>
 		<script language="JavaScript" src="javascript/jquery.tablednd-0.5.js"></script>
+		<script src="javascript/jquery-ui-1.8.7.custom.min.js"></script>
 		<script language="JavaScript" src="javascript/board.js"></script>
+		
 	</body>
 </html>

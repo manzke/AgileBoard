@@ -22,7 +22,7 @@ var task = function(name, state) {
 		state: state,
 	
 		render: function() {
-			return $('<div></div>').addClass('task').text(name);
+			return $('<li></li>').text(name);
 		}
 	};
 }
@@ -36,91 +36,68 @@ var board = function() {
 		d: 'Design', 
 		dev: 'Development', 
 		t: 'Test', 
-		r: 'Release'};
+		r: 'Release'
+	};
 	
-	function renderHeader() {
-		var header = $('<tr><th></th></tr>');
-		$.each(states, function(abbr, state) { 
-			header.append($('<th></th>').addClass('state').addClass(abbr).text(state));
-		});
-		return header;
-	}
-	
-	function renderStories() {
-		var storyBody = $('<tbody></tbody>');
-		$.each(stories, function(key, story) {
-			var row = $('<tr></tr>').attr('id', story.prio).
-				append($('<td></td>').addClass('story').
-				append(story.render()).
-				append($('<a></a>').attr('href','#task').text('+ Task').click(function() { 
-					$('#storyForm').hide();
-					$('#taskForm').show();
-				})));
+	function renderStory(story) {
+		var row = $('<li></li>').attr('id', story.prio).addClass('story');
 		
-			$.each(states, function(abbr, state) { 
-				var column = $('<td></td>');
-				
-				$.each(story.tasks, function(key, task) {
-					if(task.state == abbr) {
-						column.append(task.render());
-					}
-				});
-				
-				row.append(column);
-			});
+		// render story title
+		$('<div></div>').addClass('desc').append(story.render()).appendTo(row);
+		
+		$.each(states, function(abbr, state) { 
+			var column = $('<ol></ol>').addClass('tasks').appendTo(row);
 			
-			storyBody.append(row);
-		});
-		return storyBody;
+			// assign tasks
+			$.each(story.tasks, function(key, task) {
+				if(task.state == abbr) {
+					column.append(task.render());
+				}
+			});
+		});			
+		return row;
 	}
-	
+		
 	return {
-		// public interface
 		init: function(persistedStories) {
 			stories = persistedStories;
 		},
 		
 		addStory: function(story){
-			stories.push(story);
+			//stories.push(story);
 		},
 		
 		addTask: function(task, story){
 			//stories.push(story);
 		},
 		
-		render: function(container){
-			$.each(states, function(abbr, state) {
-				 $('#states').append($('<option></option>').attr('value', abbr).text(state));	
+		render: function(){
+			// create board
+			var board = $('<ol></ol>').attr('id', 'board');
+			
+			// render header
+			board.append($('<li></li>').addClass('desc').text(''));
+			$.each(states, function(abbr, state) { 
+				board.append($('<li></li>').addClass('state').addClass(abbr).text(state));
 			});
+			
+			
+			// render stories
 			$.each(stories, function(key, story) {
-				 $('#stories').append($('<option></option>').attr('value', story.name).text(story.name));
+				board.append(renderStory(story));
 			});
-
-			$('body').append($('<a></a>').attr('href','#story').text('+ Story').click(function() { 
-				$('#taskForm').hide();
-				$('#storyForm').show();
-			}));
+			
+			// enable sortable
+			board.sortable();
+			board.disableSelection();
 			
 			// board
-			$('body').append($('<table></table>').attr('id', 'board').append(renderHeader()).append(renderStories()));
-			$('#board').tableDnD({dragHandle: 'story', onDragClass: 'dragRow', 
-				onDrop: function(table, row) {
-					$('#board tr').not(':first').each(function(i, row) {
-						var prio = i+1;
-						var story = stories[row.id-1];
-						
-						if(prio != story.prio) {
-							dao.updatePriority(story.prio, prio);
-							story.prio = prio;
-						}
-					});
-				}
-			});
-			$('.story').hover(function() {
-				$(this).addClass('dragHandle');
-			}, function() {
-				$(this).removeClass('dragHandle');
-			});
+			$('body').append(board);
+			
+			// enable drag'n drop for tasks
+			$(".tasks").sortable({
+				connectWith: ".tasks"
+			}).disableSelection();
 		}
     };
 }();
@@ -171,6 +148,18 @@ var addTask = function() {
 }
 
 $(document).ready(function() {
+//	$.each(states, function(abbr, state) {
+//		 $('#states').append($('<option></option>').attr('value', abbr).text(state));	
+//	});
+//	$.each(stories, function(key, story) {
+//		 $('#stories').append($('<option></option>').attr('value', story.name).text(story.name));
+//	});
+//
+//	$('body').append($('<a></a>').attr('href','#story').text('+ Story').click(function() { 
+//		$('#taskForm').hide();
+//		$('#storyForm').show();
+//	}));
+	
 	board.init(dao.findAllStories());
 	board.render();
 });
