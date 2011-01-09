@@ -21,7 +21,7 @@ var task = function(name, state) {
 		state: state,
 	
 		render: function() {
-			return $('<div></div>').addClass('task').text(name);
+			return $('<li></li>').text(name);
 		}
 	};
 }
@@ -51,40 +51,25 @@ var board = function() {
 	var stories = [];
 	var states = [];
 
-	function renderHeader() {
-		var header = $('<tr><th></th></tr>');
-		$.each(states, function(s, state) { 
-			header.append($('<th></th>').addClass('state').css("background-color", state.color).text(state.name));
-		});
-		return header;
-	}
-	
-	function renderStories() {
-		var storyBody = $('<tbody></tbody>');
-		$.each(stories, function(key, story) {
-			var row = $('<tr></tr>').attr('id', story.prio).
-				append($('<td></td>').addClass('story').
-				append(story.render()).
-				append($('<a></a>').attr('href','#task').text('+ Task').click(function() { 
-					$('#storyForm').hide();
-					$('#taskForm').show();
-				})));
+	function renderStory(story) {
+		var row = $('<li></li>').attr('id', story.prio).addClass('story');
+
+		// render story title
+		$('<div></div>').addClass('desc').addClass('.ui-widget-header').append(story.render()).appendTo(row);
 		
-			$.each(states, function(s, state) { 
-				var column = $('<td></td>');
-				
-				$.each(story.tasks, function(key, task) {
-					if(task.state == state.id) {
-						column.append(task.render());
-					}
-				});
-				
-				row.append(column);
-			});
+		$.each(states, function(abbr, state) { 
+			var column = $('<ol></ol>').addClass('tasks').appendTo(row);
 			
-			storyBody.append(row);
-		});
-		return storyBody;
+			// assign tasks
+			$.each(story.tasks, function(key, task) {
+				if(task.state == state.id) {
+					column.append(task.render());
+				}
+			});
+
+
+		});			
+		return row;
 	}
 	
 	return {
@@ -103,45 +88,38 @@ var board = function() {
 		addTask: function(task, story){
 			story.addTask(task);
 		},
-				
-		render: function(container){
-			$.each(states, function(s, state) {
-				 $('#states').append($('<option></option>').attr('value', state.id).text(state.name));	
-			});
-			$.each(stories, function(key, story) {
-				 $('#stories').append($('<option></option>').attr('value', story.name).text(story.name));
-			});
+		
+		render: function(){
+			// create board
+			var board = $('<ol></ol>').attr('id', 'board');
+			
+			// render header
+			board.append($('<li></li>').addClass('desc').text(''));
 
-			$('body').append($('<a></a>').attr('href','#story').attr('id','addStory').text('+ Story').click(function() { 
-				$('#taskForm').hide();
-				$('#storyForm').show();
-			}));
+			$.each(states, function(s, state) {
+				board.append($('<li></li>').addClass('state').css("background-color", state.color).text(state.name)); //.addClass("ui-state-default")				
+			});		
+			
+			// render stories
+			$.each(stories, function(key, story) {
+				board.append(renderStory(story));
+			});
+			
+			// enable sortable
+			board.sortable();
+			board.disableSelection();
 			
 			// board
-			$('body').append($('<table></table>').attr('id', 'board').append(renderHeader()).append(renderStories()));
-			$('#board').tableDnD({dragHandle: 'story', onDragClass: 'dragRow', 
-				onDrop: function(table, row) {
-					$('#board tr').not(':first').each(function(i, row) {
-						var prio = i+1;
-						var story = stories[row.id-1];
-						
-						if(prio != story.prio) {
-							dao.updatePriority(story.prio, prio);
-							story.prio = prio;
-						}
-					});
-				}
-			});
-			$('.story').hover(function() {
-				$(this).addClass('dragHandle');
-			}, function() {
-				$(this).removeClass('dragHandle');
-			});
-		},		
-		
+			$('body').append(board);
+
+			// enable drag'n drop for tasks
+			$(".tasks").sortable({
+				connectWith: ".tasks"
+			}).disableSelection();
+		},
+				
 		reset: function(container){
-			$("#addStory").remove();
-			$("#board").remove();
+			$('#board').remove();
 			stories.length=0;
 			states.length=0;
 		}

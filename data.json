@@ -9,30 +9,20 @@
 				],
 	"stories" :[
 					{
-						"name": "Do some Stuff!",
+						"name": "General",
 						"prio": 1,
 						"tasks":[
-									{ "name":"Fix YSlow", "state":"pr" },
-									{ "name":"Make application faster", "state":"t" },
-									{ "name":"Build something astonishing", "state":"pr" },
-									{ "name":"Google Page Speed fix", "state":"d" }
+									{ "name":"Drag&Drop iPad/iPhone", "state":"n" },
+									{ "name":"Disable Selection for Header", "state":"n" },
+									{ "name":"Persist DnD to Model", "state":"n" }
 								]
 					},
 					{
-						"name": "Rethink",
+						"name": "UI",
 						"prio": 2,
 						"tasks":[
-									{ "name":"Do something with OpenID", "state":"d" },
-									{ "name":"Checkout optimize", "state":"dev" }
-								]
-					},
-					{
-						"name": "Rethink",
-						"prio": 3,
-						"tasks":[
-									{ "name":"Credit Card Payment", "state":"r" },
-									{ "name":"Rebuild with REST", "state":"dev" },
-									{ "name":"Rebuild with SOAP", "state":"dev" }
+									{ "name":"Fix table colors", "state":"n" },
+									{ "name":"Add table grid", "state":"n" }
 								]
 					}
 				]
