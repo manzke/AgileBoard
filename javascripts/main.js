@@ -263,13 +263,7 @@ var utils = function(){
 	};
 }();
 
-	var location = utils.getQueryVariable("#location");
-	if(location == null){
-		$('#location').val("data.json");	
-	}
-	utils.checkNetworkStatus(function(online){
-		utils.load('#location');
-	});
+	var location = "data.json";
 	
 	$( "#saveButton" )
 			.button()
