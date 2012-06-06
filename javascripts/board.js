@@ -1,4 +1,3 @@
-/*
 var isOnline = true;
 
 var state = function(id, name, color) {
@@ -322,4 +321,3 @@ var utils = function(){
 	setInterval(function() {
 					utils.checkNetworkStatus();
 				}, 5000 );
-*/
