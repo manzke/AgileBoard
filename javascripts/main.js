@@ -11,3 +11,17 @@ var state = function(id, name, color) {
 		color: color
 	};
 }
+
+var task = function(name, state) {
+	var name;
+	var state;
+	
+	return {
+		name: name,
+		state: state,
+	
+		render: function() {
+			return $('<li></li>').text(name);
+		}
+	};
+}
