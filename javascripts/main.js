@@ -123,9 +123,6 @@ var utils = function(){
 	};
 }();
 
-	$(document.body).bind("online", utils.checkNetworkStatus);
-   	$(document.body).bind("offline", utils.checkNetworkStatus);
-
 	var location = utils.getQueryVariable("#location");
 	if(location == null){
 		$('#location').val("data.json");	
