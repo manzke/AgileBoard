@@ -220,6 +220,8 @@ var utils = function(){
 			}
 		},
 		parse: function(data){
+			console.log('parsing');
+			console.log(data);
 			board.reset();
 			$.each(data.states, function(i,item)
 								{
