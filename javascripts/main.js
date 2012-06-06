@@ -1,4 +1,4 @@
-  $( "#saveButton" )
+	$( "#saveButton" )
 			.button()
 			.click(function() {
 				utils.save('#location');
@@ -9,3 +9,35 @@
 			.click(function() {
 				$( "#loadDialog-form" ).dialog( "open" );
 			});
+			
+	$( "#loadDialog-form" ).dialog({
+			autoOpen: false,
+			modal: true,
+			buttons: {
+				"Load a Board": function() {
+					var internalLocation = $('#internalLocation');
+					var location = internalLocation.val();
+					if(location == null || location.length == 0){
+						location = $('#offlineBoards :selected').val();
+					}
+					$('#location').val(location);
+					console.log("load from location: "+location+" and store it offline? "+ $('#offlineAvailable').is(':checked'));
+					utils.load('#location', $('#offlineAvailable').is(':checked'));
+					$( this ).dialog( "close" );
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			open: function(){
+				var offlineBoards = $('#offlineBoards');
+				offlineBoards.empty();
+				for (var i = 0; i < localStorage.length; i++){
+					var key = localStorage.key(i);	
+					offlineBoards.append(new Option(key, key));
+				}				
+			},
+			close: function() {
+				$('#internalLocation').val("");
+			}
+		});
