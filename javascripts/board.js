@@ -262,7 +262,7 @@ var utils = function(){
 		}
 	};
 }();
-
+/*
 	$(document.body).bind("online", utils.checkNetworkStatus);
     $(document.body).bind("offline", utils.checkNetworkStatus);
 
@@ -271,7 +271,7 @@ var utils = function(){
 		$('#location').val("data.json");	
 	}
 	utils.checkNetworkStatus(function(online){
-		//utils.load('#location');
+		utils.load('#location');
 	});
 	
 	$( "#saveButton" )
@@ -321,3 +321,4 @@ var utils = function(){
 	setInterval(function() {
 					utils.checkNetworkStatus();
 				}, 5000 );
+*/
