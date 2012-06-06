@@ -241,8 +241,8 @@ var utils = function(){
 										); 
 									}
 				);
+				board.render();
 			}
-			board.render();
 		},
 		feedback: function(field, clazz, text){
 			$(field).append($('<span></span').addClass(clazz).text(text));					
