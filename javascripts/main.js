@@ -180,44 +180,10 @@ var utils = function(){
 			return null;
 		}, 
 		updateOnlineStatus: function(online, hide) {
-			isOnline = online;
-			if(!hide){
-				if(online){
-					$('#onlineStatus').empty().append($('<span></span').addClass('ok').text('You are online!'));
-				}else{
-					$('#onlineStatus').empty().append($('<span></span').addClass('info').text('You are offline!'));
-				}
-			}
+			
 		}, 
 		checkNetworkStatus: function(onAction) {
-			if (navigator.onLine) {
-				$.ajax({
-					async: true,
-					cache: false,
-					dataType: "json",
-					error: function (req, status, ex) {
-						utils.updateOnlineStatus(false);
-						if(typeof(onAction) != 'undefined'){
-							onAction(false);
-						};
-					},
-					success: function (data, status, req) {
-						utils.updateOnlineStatus(true);
-						if(typeof(onAction) != 'undefined'){
-							onAction(true);
-						};
-					},
-					timeout: 5000,
-					type: "GET",
-					url: "javascripts/ping.json"
-				});
-			}
-			else {
-				utils.updateOnlineStatus(false);
-				if(typeof(onAction) != 'undefined'){
-					onAction(false);
-				};
-			}
+			
 		},
 		parse: function(data){
 			if((data == null) || (data.states == null) || (data.stories == null)){
