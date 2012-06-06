@@ -26,12 +26,6 @@ var task = function(name, state) {
 	};
 }
 
-
-	var location = utils.getQueryVariable("#location");
-	if(location == null){
-		$('#location').val("data.json");	
-	}
-
 	$( "#saveButton" )
 			.button()
 			.click(function() {
