@@ -95,3 +95,7 @@ var utils = function(){
 		}
 	};
 }();
+
+setInterval(function() {
+		utils.checkNetworkStatus();
+	}, 5000 );
