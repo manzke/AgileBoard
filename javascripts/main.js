@@ -211,10 +211,7 @@ var utils = function(){
 			}
 		},
 		feedback: function(field, clazz, text){
-			$(field).append($('<span></span').addClass(clazz).text(text));					
-			setTimeout(function() {
-						$(field).empty();
-					}, 3000 );
+		
 		},
 		save: function(id){
 			var location = $(id).val();
