@@ -220,25 +220,28 @@ var utils = function(){
 			}
 		},
 		parse: function(data){
-			console.log('parsing');
-			console.log(data);
-			board.reset();
-			$.each(data.states, function(i,item)
-								{
-									board.addState(new state(item.id, item.name, item.color));
-								}
-			);
-			$.each(data.stories, function(i,item)
-								{
-									var st = new story(item.name, item.prio);
-									board.addStory(st);
-									$.each(item.tasks, function(j,jitem)
-														{
-															board.addTask(new task(jitem.name,jitem.state), st);
-														}
-									); 
-								}
-			);
+			if((data == null) || (data.states == null) || (data.stories == null)){
+				console.log('no data could be loaded');
+				utils.feedback('#feedback', 'error', 'No data could be loaded from backend.');
+			}else{
+				board.reset();
+				$.each(data.states, function(i,item)
+									{
+										board.addState(new state(item.id, item.name, item.color));
+									}
+				);
+				$.each(data.stories, function(i,item)
+									{
+										var st = new story(item.name, item.prio);
+										board.addStory(st);
+										$.each(item.tasks, function(j,jitem)
+															{
+																board.addTask(new task(jitem.name,jitem.state), st);
+															}
+										); 
+									}
+				);
+			}
 			board.render();
 		},
 		feedback: function(field, clazz, text){
