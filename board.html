@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html manifest="cache.manifest">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>Agile Board</title>
+		<link rel="stylesheet" href="css/board.css" type="text/css" />
+		<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.7.custom.css" type="text/css" />
+		<script language="JavaScript" src="javascripts/jquery-1.4.4.min.js"></script>
+		<script language="JavaScript" src="javascripts/jquery-ui-1.8.7.custom.min.js"></script>
+		<script language="JavaScript" src="javascripts/json2.js"></script>
+	<style>
+		#board { margin: 0; padding: 0px;}
+		.story { clear: left; background-color: #ff3300; overflow: auto; }
+		.desc { width: 7%; display: block; padding: 0.5em 1.5em; }
+		.state, .desc { float: left;}
+		.tasks { float: left; background-color: #ff9900; border: 1px solid #000; padding-top: 1em; }
+		.tasks, .state { padding: 0.5em 1.5em; margin: 0; width: 10%; display: block; }
+	</style>
+	</head>
+
+	<body>
+		<div id="onlineStatus"></div>
+		<div id="feedback"></div>
+		<h1>Agile Board</h1>
+		
+		<div id="loadDialog"></div>
+		<div id="loadDialog-form" title="Load a Board">
+			<p class="validateTips">All form fields are required.</p>
+			<form>
+				<fieldset>
+					<label for="internalLocation">Location</label>
+					<input type="text" name="internalLocation" id="internalLocation" value="" class="text ui-widget-content ui-corner-all" />
+					<label for="offlineAvailable">Offline available?</label>
+					<input type="checkbox" name="offlineAvailable" id="offlineAvailable" checked class="text ui-widget-content ui-corner-all" />
+					<select id="offlineBoards">
+					</select>
+				</fieldset>
+			</form>
+		</div>
+		<button id="loadButton">Load</button>
+		<button id="saveButton">Save</button>
+		<input type="hidden" name="location" id="location" value="data.json"/>
+				
+		<form id="storyForm" style="display:none">
+			<input type="text" name="storyName" />
+			<input type="submit" />
+		</form>
+		
+		<form id="taskForm" style="display:none">
+			<input name="taskName" />
+			<select id="stories" name="story"></select>
+			<select id="states" name="state"></select>
+			<input type="submit" />
+		</form>
+		<script language="JavaScript" src="javascripts/board.js"></script>		
+	</body>
+</html>
