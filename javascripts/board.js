@@ -209,7 +209,7 @@ var utils = function(){
 					},
 					timeout: 5000,
 					type: "GET",
-					url: "javascript/ping.json"
+					url: "javascripts/ping.json"
 				});
 			}
 			else {
