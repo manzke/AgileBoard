@@ -135,33 +135,7 @@ var dao = function(){
 			}	
 		},
 		load: function(location, isOnline, store){
-			if(isOnline){
-				$.ajax({
-					async: true,
-					dataType: "json",
-					error: function (req, status, ex) {
-						utils.updateOnlineStatus(false, true);
-						utils.feedback('#feedback', 'error', 'No data was fetched from location: '+location);
-					},
-					success: function (data, status, req) {
-						utils.updateOnlineStatus(true, true);
-						utils.parse(data);
-						if(store){
-							dao.save(location, isOnline);
-						}
-					},
-					timeout: 5000,
-					type: "GET",
-					url: location
-				});
-			}else{
-				if (window.localStorage) {
-					var data = localStorage.getItem(location);
-					utils.parse(JSON.parse(data));
-				} else {
-					utils.feedback('#feedback', 'error', 'Your Browser does not support LocalStorage.');
-				}
-			}
+			
 		}
 	};
 }();
@@ -169,14 +143,6 @@ var dao = function(){
 var utils = function(){
 	return {
 		getQueryVariable: function(variable) { 
-			var query = window.location.search.substring(1); 
-			var vars = query.split("&"); 
-			for (var i=0;i<vars.length;i++) { 
-				var pair = vars[i].split("="); 
-				if (pair[0] == variable) { 
-					return pair[1]; 
-				} 
-			} 
 			return null;
 		}, 
 		updateOnlineStatus: function(online, hide) {
@@ -186,42 +152,16 @@ var utils = function(){
 			
 		},
 		parse: function(data){
-			if((data == null) || (data.states == null) || (data.stories == null)){
-				console.log('no data could be loaded');
-				utils.feedback('#feedback', 'error', 'No data could be loaded from backend.');
-			}else{
-				board.reset();
-				$.each(data.states, function(i,item)
-									{
-										board.addState(new state(item.id, item.name, item.color));
-									}
-				);
-				$.each(data.stories, function(i,item)
-									{
-										var st = new story(item.name, item.prio);
-										board.addStory(st);
-										$.each(item.tasks, function(j,jitem)
-															{
-																board.addTask(new task(jitem.name,jitem.state), st);
-															}
-										); 
-									}
-				);
-				board.render();
-			}
+			
 		},
 		feedback: function(field, clazz, text){
 		
 		},
 		save: function(id){
-			var location = $(id).val();
-			dao.save(location, isOnline);
-			utils.feedback('#feedback', 'ok', 'Saved!');
+		
 		},
 		load: function(id, store){
-			var location = $(id).val();
-			dao.load(location, isOnline, store);
-			utils.feedback('#feedback', 'ok', 'Loaded!');
+		
 		}
 	};
 }();
