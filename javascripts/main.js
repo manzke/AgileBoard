@@ -44,7 +44,6 @@ $( "#loadDialog-form" ).dialog({
 		}
 	});
 
-
 var utils = function(){
 	return {
 		updateOnlineStatus: function(online, hide) {
@@ -95,6 +94,10 @@ var utils = function(){
 		}
 	};
 }();
+
+$(document.body).bind("online", utils.checkNetworkStatus);
+$(document.body).bind("offline", utils.checkNetworkStatus);
+
 
 setInterval(function() {
 		utils.checkNetworkStatus();
