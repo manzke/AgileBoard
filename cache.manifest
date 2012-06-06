@@ -1,0 +1,15 @@
+CACHE MANIFEST
+
+# CACHE:
+# index.html
+# css/board.css
+# javascript/board.js
+# javascript/jquery-1.4.4.min.js
+# javascript/jquery-ui-1.8.7.custom.min.js
+# javascript/json2.js
+
+NETWORK:
+javascript/ping.json
+*
+
+# Cache Manifest Version: 0.6.2

@@ -1,0 +1,64 @@
+body {
+	font-family: Helvetica;
+}
+
+input, select {
+	border: 1px solid #000;
+}
+
+.state, .task, .story, #feedback, #onlineStatus span {
+	-moz-border-radius:3px;
+	margin: 0.2em;
+	padding: 0.2em;
+}
+
+#feedback {
+	text-align: center;
+}
+
+#onlineStatus {
+	text-align: center;
+}
+
+span.error {
+	background-color: red;
+	color: #fff; 
+}
+
+span.info {
+	background-color: yellow;
+	color: #fff; 
+}
+
+span.ok {
+	background-color: green;
+	color: #fff; 
+}
+
+/* Board */
+table {
+	width: 100%;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+td {
+	vertical-align: top;
+	padding-bottom: 2em;
+}
+
+.story, .task {
+	background-color: #ddd;
+}
+	
+.dragRow {
+	background-color: #999;
+}
+
+.dragHandle {
+	cursor: pointer;
+}
+
+.dragHandle:after {
+	content:" \2228 \2227";
+}
