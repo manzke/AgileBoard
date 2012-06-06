@@ -271,7 +271,7 @@ var utils = function(){
 		$('#location').val("data.json");	
 	}
 	utils.checkNetworkStatus(function(online){
-		utils.load('#location');
+		//utils.load('#location');
 	});
 	
 	$( "#saveButton" )
