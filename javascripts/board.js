@@ -1,3 +1,4 @@
+/*
 var isOnline = true;
 
 var state = function(id, name, color) {
@@ -262,7 +263,7 @@ var utils = function(){
 		}
 	};
 }();
-/*
+
 	$(document.body).bind("online", utils.checkNetworkStatus);
     $(document.body).bind("offline", utils.checkNetworkStatus);
 
