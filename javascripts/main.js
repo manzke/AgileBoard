@@ -41,3 +41,17 @@
 				$('#internalLocation').val("");
 			}
 		});
+
+
+var utils = function(){
+	return {
+		checkNetworkStatus: function(onAction) {
+		}
+		feedback: function(field, clazz, text){
+			$(field).append($('<span></span').addClass(clazz).text(text));					
+			setTimeout(function() {
+						$(field).empty();
+					}, 3000 );
+		}
+	};
+}();
