@@ -2,14 +2,16 @@ CACHE MANIFEST
 
 # CACHE:
 # index.html
+# board.html
 # css/board.css
+# css/ui-lightness/jquery-ui-1.8.21.custom.css
 # javascripts/board.js
-# javascripts/jquery-1.4.4.min.js
-# javascripts/jquery-ui-1.8.7.custom.min.js
+# javascripts/jquery-1.7.2.min.js
+# javascripts/jquery-ui-1.8.21.custom.min.js
 # javascripts/json2.js
 
 NETWORK:
 javascripts/ping.json
 *
 
-# Cache Manifest Version: 0.6.5
+# Cache Manifest Version: 0.6.6
