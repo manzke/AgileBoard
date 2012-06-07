@@ -263,10 +263,10 @@ var utils = function(){
 	};
 }();
 
-var location = utils.getQueryVariable("#location");
-if(location == null){
-	$('#location').val("data.json");	
-}
+var location = "data.json";//utils.getQueryVariable("#location");
+//if(location == null){
+//	$('#location').val("data.json");	
+//}
 
 $(document.body).bind("online", utils.checkNetworkStatus);
 $(document.body).bind("offline", utils.checkNetworkStatus);
