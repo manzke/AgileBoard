@@ -128,36 +128,36 @@ var board = function() {
 
 var dao = function(){
 	return {
-		save: function(location, isOnline){
+		save: function(dataURL, isOnline){
 			if (window.localStorage) {
-				localStorage.setItem(location, JSON.stringify(board.getData()));
+				localStorage.setItem(dataURL, JSON.stringify(board.getData()));
 			} else {
 				alert("Your Browser does not support LocalStorage.");
 			}	
 		},
-		load: function(location, isOnline, store){
+		load: function(dataURL, isOnline, store){
 			if(isOnline){
 				$.ajax({
 					async: true,
 					dataType: "json",
 					error: function (req, status, ex) {
 						utils.updateOnlineStatus(false, true);
-						utils.feedback('#feedback', 'error', 'No data was fetched from location: '+location);
+						utils.feedback('#feedback', 'error', 'No data was fetched from url: '+dataURL);
 					},
 					success: function (data, status, req) {
 						utils.updateOnlineStatus(true, true);
 						utils.parse(data);
 						if(store){
-							dao.save(location, isOnline);
+							dao.save(dataURL, isOnline);
 						}
 					},
 					timeout: 5000,
 					type: "GET",
-					url: location
+					url: dataURL
 				});
 			}else{
 				if (window.localStorage) {
-					var data = localStorage.getItem(location);
+					var data = localStorage.getItem(dataURL);
 					utils.parse(JSON.parse(data));
 				} else {
 					utils.feedback('#feedback', 'error', 'Your Browser does not support LocalStorage.');
@@ -170,7 +170,7 @@ var dao = function(){
 $( "#saveButton" )
 		.button()
 		.click(function() {
-			utils.save('#location');
+			utils.save('#dataURL');
 		});
 
 $( "#loadButton" )
@@ -184,14 +184,14 @@ $( "#loadDialog-form" ).dialog({
 		modal: true,
 		buttons: {
 			"Load a Board": function() {
-				var internalLocation = $('#internalLocation');
-				var location = internalLocation.val();
-				if(location == null || location.length == 0){
-					location = $('#offlineBoards :selected').val();
+				var internalLocation = $('#internalDataURL');
+				var dataURL = internalLocation.val();
+				if(dataURL == null || dataURL.length == 0){
+					dataURL = $('#offlineBoards :selected').val();
 				}
-				$('#location').val(location);
-				console.log("load from location: "+location+" and store it offline? "+ $('#offlineAvailable').is(':checked'));
-				//utils.load('#location', $('#offlineAvailable').is(':checked'));
+				$('#dataURL').val(dataURL);
+				console.log("load from url: "+dataURL+" and store it offline? "+ $('#offlineAvailable').is(':checked'));
+				//utils.load('#dataURL', $('#offlineAvailable').is(':checked'));
 				$( this ).dialog( "close" );
 			},
 			Cancel: function() {
@@ -207,7 +207,7 @@ $( "#loadDialog-form" ).dialog({
 			}				
 		},
 		close: function() {
-			$('#internalLocation').val("");
+			$('#internalDataURL').val("");
 		}
 	});
 
@@ -263,9 +263,9 @@ var utils = function(){
 	};
 }();
 
-var location = "data.json";//utils.getQueryVariable("#location");
-//if(location == null){
-//	$('#location').val("data.json");	
+var dataURL = "data.json";//utils.getQueryVariable("#dataURL");
+//if(dataURL == null){
+//	$('#dataURL').val("data.json");	
 //}
 
 $(document.body).bind("online", utils.checkNetworkStatus);
