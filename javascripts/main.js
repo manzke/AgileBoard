@@ -191,7 +191,7 @@ $( "#loadDialog-form" ).dialog({
 				}
 				$('#location').val(location);
 				console.log("load from location: "+location+" and store it offline? "+ $('#offlineAvailable').is(':checked'));
-				utils.load('#location', $('#offlineAvailable').is(':checked'));
+				//utils.load('#location', $('#offlineAvailable').is(':checked'));
 				$( this ).dialog( "close" );
 			},
 			Cancel: function() {
