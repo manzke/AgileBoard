@@ -125,6 +125,48 @@ var board = function() {
     };
 }();
 
+
+var dao = function(){
+	return {
+		save: function(location, isOnline){
+			if (window.localStorage) {
+				localStorage.setItem(location, JSON.stringify(board.getData()));
+			} else {
+				alert("Your Browser does not support LocalStorage.");
+			}	
+		},
+		load: function(location, isOnline, store){
+			if(isOnline){
+				$.ajax({
+					async: true,
+					dataType: "json",
+					error: function (req, status, ex) {
+						utils.updateOnlineStatus(false, true);
+						utils.feedback('#feedback', 'error', 'No data was fetched from location: '+location);
+					},
+					success: function (data, status, req) {
+						utils.updateOnlineStatus(true, true);
+						utils.parse(data);
+						if(store){
+							dao.save(location, isOnline);
+						}
+					},
+					timeout: 5000,
+					type: "GET",
+					url: location
+				});
+			}else{
+				if (window.localStorage) {
+					var data = localStorage.getItem(location);
+					utils.parse(JSON.parse(data));
+				} else {
+					utils.feedback('#feedback', 'error', 'Your Browser does not support LocalStorage.');
+				}
+			}
+		}
+	};
+}();
+
 $( "#saveButton" )
 		.button()
 		.click(function() {
